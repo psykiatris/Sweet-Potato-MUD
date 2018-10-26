@@ -22,7 +22,7 @@ import mud.network.server.log.ConsoleLog;
  */
 public class GameServer implements Runnable {
 
-    public static final int DEFAULT_PORT = 1337;
+    public static final int DEFAULT_PORT = 5000;
     private ServerSocket serverSocket;
     private HashMap<InetAddress, Connection> clientMap; //The master client list that holds connection
     private GameMaster gameMaster;
