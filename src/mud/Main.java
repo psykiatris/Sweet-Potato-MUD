@@ -2,9 +2,10 @@ package mud;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.text.MessageFormat;
+
 import mud.network.client.ClientFrame;
 import mud.network.client.GameClient;
-import mud.network.client.GameClient.ConnectionChoice;
 import mud.network.server.GameServer;
 
 /**
@@ -17,9 +18,9 @@ public class Main {
     /**
      * Starts the server on a new thread and listens for client connections.
      *
-     * @throws IOException
+     * @throws IOException When attempting connection while starting server
      */
-    public static void startServer(boolean localOnly) throws IOException {
+    private static void startServer(boolean localOnly) throws IOException {
         GameServer gameServer = new GameServer(GameServer.DEFAULT_PORT, localOnly);
         new Thread(gameServer).start();
     }
@@ -28,27 +29,31 @@ public class Main {
      * Attempts to create and connect the client application, then starts a
      * server and connects it if necessary.
      *
-     * @throws UnknownHostException
-     * @throws IOException
+     * @throws UnknownHostException When host cannot be found.
+     * @throws IOException When error occurs in connection
      */
-    public static void connectClient() throws UnknownHostException, IOException {
+    private static void connectClient() throws UnknownHostException, IOException {
         ClientFrame clientFrame = new ClientFrame();
         GameClient gameClient = new GameClient(clientFrame.getjTextArea1(), clientFrame.getjTextField1());
         clientFrame.setVisible(true);
         //Block until the connection choice is determined
-        ConnectionChoice connectionChoice = gameClient.getConnectionChoice();
+        GameClient.ConnectionChoice connectionChoice = gameClient.getConnectionChoice();
         //Check for local only play
-        if (connectionChoice.equals(ConnectionChoice.LOCAL_SOLO)) {
+        if (connectionChoice == GameClient.ConnectionChoice.LOCAL_SOLO)
             startServer(true);
-        }
         //Check for local hosting
-        if (connectionChoice.equals(ConnectionChoice.LOCAL_CO_OP)) {
+        if (connectionChoice == GameClient.ConnectionChoice.LOCAL_CO_OP)
             startServer(false);
-        }
-        //Otherwise the connection is remote, no need for server
-    }
+    } //Otherwise the connection is remote, no need for server
 
-    public static void main(String[] args) throws IOException {
-        connectClient();
-    }
+
+    public static void main(String[] args) {
+        try {
+            connectClient();
+        } catch (UnknownHostException e) {
+            System.out.println(MessageFormat.format("Unknown Host: {0}", e));
+        } catch (IOException e) {
+            System.out.println(MessageFormat.format("IO Error: {0}", e));
+        }
+            }
 }
