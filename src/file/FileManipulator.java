@@ -83,7 +83,6 @@ public enum FileManipulator {
      * @param path Path to file
      * @return a array of files if any exist, else null
      */
-    public static File[] getFiles(String path) {
-        // Why this method?
-    }
+    // removed method getFiles() as reason for it being here is not clear
+
 }
