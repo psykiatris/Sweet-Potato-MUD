@@ -1,6 +1,7 @@
 package file;
 
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,24 +17,26 @@ public class FileManipulator {
     /**
      * Writes the passed object to the passed filename on the passed path.
      *
-     * @param objectToWrite
-     * @param path
-     * @param fileName
+     * @param objectToWrite Object to be written
+     * @param path File pathname
+     * @param fileName Name of file
      */
     public static void writeObject(Object objectToWrite, String path, String fileName) {
         //Create the path if it doesn't exist
         new File(path).mkdirs();
-        try {
-            ObjectOutputStream oStream;
-            FileOutputStream fileOut;
-            File file = new File(path + fileName);
-            file.createNewFile();
-            fileOut = new FileOutputStream(file);
-            oStream = new ObjectOutputStream(fileOut);
+        File file = new File(path + fileName);
+
+        try (ObjectOutputStream oStream =
+                     new ObjectOutputStream(new FileOutputStream(file))) {
+
             oStream.writeObject(objectToWrite);
-            oStream.close();
-        } catch (IOException ex) {
+
+            file.createNewFile();
+
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE,"Issue with IO", e);
         }
     }
 
