@@ -20,8 +20,10 @@ public class Main {
      *
      * @throws IOException When attempting connection while starting server
      */
-    private static void startServer(boolean localOnly) throws IOException {
-        GameServer gameServer = new GameServer(GameServer.DEFAULT_PORT, localOnly);
+    private static void startServer(boolean b) throws IOException {
+        GameServer gameServer = new GameServer(GameServer.DEFAULT_PORT);
+        // Setting global Local-only flag
+        gameServer.setLocalOnly(b);
         new Thread(gameServer).start();
     }
 
@@ -40,9 +42,11 @@ public class Main {
         GameClient.ConnectionChoice connectionChoice = gameClient.getConnectionChoice();
         //Check for local only play
         if (connectionChoice == GameClient.ConnectionChoice.LOCAL_SOLO)
+            // Setting global flag
             startServer(true);
         //Check for local hosting
-        if (connectionChoice == GameClient.ConnectionChoice.LOCAL_CO_OP)
+
+            if (connectionChoice == GameClient.ConnectionChoice.LOCAL_CO_OP)
             startServer(false);
     } //Otherwise the connection is remote, no need for server
 

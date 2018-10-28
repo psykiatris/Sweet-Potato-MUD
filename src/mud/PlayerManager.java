@@ -128,7 +128,7 @@ public class PlayerManager {
                 //Check through player list on an interval, saving them when necessary
                 for (Player p : players.values()) {
                     //If the player needs saving, re-serialize their data
-                    if (p.needsSaving()) {
+                    if (p.isSaved()) {
                         savePlayer(p);
                         p.hasBeenSaved();
                     }

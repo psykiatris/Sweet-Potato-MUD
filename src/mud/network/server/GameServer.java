@@ -23,21 +23,20 @@ import mud.network.server.log.ConsoleLog;
 public class GameServer implements Runnable {
 
     public static final int DEFAULT_PORT = 5000;
-    private ServerSocket serverSocket;
-    private HashMap<InetAddress, Connection> clientMap; //The master client list that holds connection
-    private GameMaster gameMaster;
-    private boolean localOnly;
+    private final ServerSocket serverSocket;
+    private final HashMap<InetAddress, Connection> clientMap; //The master client list that holds connection
+    private final GameMaster gameMaster;
+    public boolean localOnly;
 
     /**
      * Creates a new chat server operating at the passed port.
      *
      * @param port the port to operate the server on
-     * @param localOnly whether or not this server will only accept one local
-     * connection
-     * @throws IOException
+     *
+     * @throws IOException When it fails to connect
      */
-    public GameServer(int port, boolean localOnly) throws IOException {
-        this.localOnly = localOnly;
+
+    public GameServer(int port) throws IOException {
         System.out.println(ConsoleLog.log() + "Server starting on port " + port);
         serverSocket = new ServerSocket(port);
         clientMap = new HashMap<>();
@@ -48,6 +47,14 @@ public class GameServer implements Runnable {
      * Continually checks for new connections. When a client connects, requests
      * their player information.
      */
+    public final void setLocalOnly(boolean b) {
+        localOnly = b;
+    }
+
+    public final boolean isLocalOnly() {
+        return localOnly;
+    }
+
     @Override
     public void run() {
         while (!Thread.interrupted()) {
@@ -60,7 +67,9 @@ public class GameServer implements Runnable {
                     System.out.println(ConsoleLog.log() + "Player connected from "
                             + newClient.getInetAddress());
                     //If the server is local only, only accept one connection
-                    if (localOnly) {
+                    // Check if local
+                    boolean b = isLocalOnly();
+                    if (b) {
                         System.out.println(ConsoleLog.log() + "Local-only connection established.");
                         break;
                     }
@@ -89,5 +98,15 @@ public class GameServer implements Runnable {
             return connection;
         }
         return connection;
+    }
+
+    @Override
+    public String toString() {
+        return "GameServer{" +
+                "serverSocket=" + serverSocket +
+                ", clientMap=" + clientMap +
+                ", gameMaster=" + gameMaster +
+                ", localOnly=" + localOnly +
+                '}';
     }
 }
