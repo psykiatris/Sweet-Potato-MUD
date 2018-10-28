@@ -12,7 +12,8 @@ import java.util.logging.Logger;
  *
  * @author Japhez
  */
-public class FileManipulator {
+public enum FileManipulator {
+    ;
 
     /**
      * Writes the passed object to the passed filename on the passed path.
@@ -48,25 +49,29 @@ public class FileManipulator {
      * Attempts to read in the object from the passed path and file name, and
      * then returns that object.
      *
-     * @param path
-     * @param fileName
+     * @param path Path to file
+     * @param fileName Name of file
      * @return the read in object
      */
     public static Object readObject(String path, String fileName) {
-        try {
+
             Object result;
-            try (ObjectInputStream iStream = new ObjectInputStream(new FileInputStream(path + fileName))) {
+            try (ObjectInputStream iStream = new ObjectInputStream(new FileInputStream(MessageFormat.format("{0}{1}", path, fileName)))) {
                 result = iStream.readObject();
                 return result;
-            }
 
-        } catch (ClassNotFoundException | IOException ex) {
-            Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE, "Class not found", ex);
+        } catch (FileNotFoundException e) {
+                Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE, "File not found", e);
+            } catch (IOException e) {
+                Logger.getLogger(FileManipulator.class.getName()).log(Level.SEVERE, "Problem with IO", e);
+            }
         return null;
     }
 
-    public static boolean fileExists(String path, String fileName) {
+    public static boolean isFileExist(String path, String fileName) {
         File file = new File(path + fileName);
         return file.exists();
     }
@@ -75,10 +80,10 @@ public class FileManipulator {
      * Retrieves an array of all files in the passed directory, or null if none
      * are found.
      *
-     * @param path
+     * @param path Path to file
      * @return a array of files if any exist, else null
      */
     public static File[] getFiles(String path) {
-        return (new File(path).listFiles());
+        // Why this method?
     }
 }

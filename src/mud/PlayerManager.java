@@ -85,7 +85,8 @@ public class PlayerManager {
      * @return a reference to the player if successful, null if not
      */
     public Player loadPlayer(String playerName) {
-        if (FileManipulator.fileExists(GameMaster.MAIN_DATA_PATH + PATH, playerName + EXTENSION)) {
+        if (FileManipulator.isFileExist(GameMaster.MAIN_DATA_PATH + PATH,
+                playerName + EXTENSION)) {
             //Retrieve the player
             Player player = (Player) FileManipulator.readObject(GameMaster.MAIN_DATA_PATH + PATH, playerName + EXTENSION);
             if (player.getCurrentRoom() == null) {

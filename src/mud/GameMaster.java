@@ -26,7 +26,7 @@ public class GameMaster {
      */
     public GameMaster() {
         //Read in an existing area manager if possible, otherwise create a new one
-        if (FileManipulator.fileExists(MAIN_DATA_PATH, "AreaManager.data")) {
+        if (FileManipulator.isFileExist(MAIN_DATA_PATH, "AreaManager.data")) {
             areaManager = (AreaManager) FileManipulator.readObject(MAIN_DATA_PATH, "AreaManager.data");
         } else {
             System.out.println(ConsoleLog.log() + "AreaManager not found, creating new one.");
